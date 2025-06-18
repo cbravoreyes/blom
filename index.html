@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Taxonomía de Bloom + IA</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icono.png" />
+  <meta name="theme-color" content="#007bff" />
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+      background: #f9f9f9;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    p {
+      font-size: 16px;
+      text-align: center;
+    }
+
+    select, textarea, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    select[multiple] {
+      height: 200px;
+    }
+
+    .btn {
+      font-weight: bold;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    .chatgpt { background-color: #007bff; }
+    .grok { background-color: #f44336; }
+    .perplexity { background-color: #800080; }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Taxonomía de Bloom + IA</h2>
+    <p>Selecciona uno o más niveles y genera un prompt con herramientas de IA para educación superior:</p>
+
+    <select id="bloomLevels" multiple>
+      <option value="Recordar">Recordar</option>
+      <option value="Comprender">Comprender</option>
+      <option value="Aplicar">Aplicar</option>
+      <option value="Analizar">Analizar</option>
+      <option value="Evaluar">Evaluar</option>
+      <option value="Crear">Crear</option>
+    </select>
+
+    <button onclick="generarPrompt()">Generar Prompt</button>
+
+    <textarea id="promptOutput" rows="8" placeholder="Aquí aparecerá tu prompt..."></textarea>
+
+    <button class="btn chatgpt" onclick="abrirEn('ChatGPT')">Abrir en ChatGPT</button>
+    <button class="btn grok" onclick="abrirEn('Grok')">Abrir en Grok</button>
+    <button class="btn perplexity" onclick="abrirEn('Perplexity')">Abrir en Perplexity</button>
+  </div>
+
+  <script>
+    const descripciones = {
+      "Recordar": "Capacidad de recuperar información aprendida previamente.",
+      "Comprender": "Habilidad para explicar ideas o conceptos.",
+      "Aplicar": "Uso de la información en situaciones nuevas.",
+      "Analizar": "Separar información en partes y entender su estructura.",
+      "Evaluar": "Emitir juicios fundamentados a partir de criterios.",
+      "Crear": "Producir algo nuevo combinando elementos."
+    };
+
+    const herramientasIA = {
+      "Recordar": ["Quizlet", "Anki", "Memrise", "Notion AI", "Google Bard"],
+      "Comprender": ["Explainpaper", "Elicit", "ChatGPT", "Claude", "You.com"],
+      "Aplicar": ["Copilot", "ChatGPT", "Khanmigo", "Wolfram Alpha", "Socratic"],
+      "Analizar": ["Perplexity", "SciSpace", "Elicit", "ChatGPT", "LexisNexis AI"],
+      "Evaluar": ["ChatGPT", "Consensus", "Gradescope AI", "Otter.ai", "Scite.ai"],
+      "Crear": ["Canva Magic Design", "Genially", "Gamma", "Midjourney", "Sora"]
+    };
+
+    function generarPrompt() {
+      const selected = Array.from(document.getElementById('bloomLevels').selectedOptions).map(opt => opt.value);
+      if (selected.length === 0) {
+        alert("Por favor selecciona al menos un nivel.");
+        return;
+      }
+
+      let prompt = "Explora los siguientes niveles de la taxonomía de Bloom para el desarrollo universitario:\n\n";
+
+      selected.forEach(level => {
+        prompt += `📌 ${level.toUpperCase()}\nDescripción: ${descripciones[level]}\nHerramientas IA: ${herramientasIA[level].join(", ")}\n\n`;
+      });
+
+      prompt += "Genera actividades didácticas usando estas herramientas en un contexto universitario.";
+      document.getElementById("promptOutput").value = prompt;
+    }
+
+    function abrirEn(bot) {
+      const prompt = encodeURIComponent(document.getElementById("promptOutput").value);
+      if (!prompt) {
+        alert("Primero genera el prompt.");
+        return;
+      }
+
+      let url = "";
+      if (bot === "ChatGPT") url = `https://chat.openai.com/?q=${prompt}`;
+      else if (bot === "Grok") url = `https://chat.x.ai/?q=${prompt}`;
+      else if (bot === "Perplexity") url = `https://www.perplexity.ai/search?q=${prompt}`;
+
+      window.open(url, "_blank");
+    }
+  </script>
+</body>
+</html>
